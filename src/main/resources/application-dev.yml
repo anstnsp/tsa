@@ -1,0 +1,5 @@
+server:
+  port: 5555 
+  
+logging:
+  config: ./src/main/resources/logback-spring.xml

@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    active : prod 
+  
+server:
+  port: 4444
+ 
+
+logginginfo: INFO
+logging:
+  config: ./src/main/resources/logback-spring.xml

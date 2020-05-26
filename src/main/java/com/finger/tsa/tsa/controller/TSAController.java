@@ -30,16 +30,12 @@ public class TSAController {
 	 * @author 김문수
 	 */
 	@PostMapping("/v1/tsa/gettoken")
-	public SingleResult<String> getFileIncludedToken(@RequestBody TSADto dto) {
+	public SingleResult<String> getFileIncludedToken(@RequestBody TSADto dto) throws Exception {
 		
-		logger.debug("#### START getTSAToken ####");
-		try {
-			String result = tsaservice.getFileIncludedToken(dto);
-			return responseService.getSingleResult(result);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+		logger.debug("#### START getFileIncludedToken ####");
+		String result = tsaservice.getFileIncludedToken(dto);
+		return responseService.getSingleResult(result);
+
 	}
 	
 	/**

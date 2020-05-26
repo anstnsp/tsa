@@ -11,6 +11,8 @@ import java.util.Random;
 
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.tsp.TSPException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.finger.tsa.tsa.dto.TSADto;
@@ -23,16 +25,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TSAService {
 	
+	private static final Logger logger = LoggerFactory.getLogger(TSAService.class);
+	
 	//private final Util util;
 	//private final TSATokenMaker tsaTokenMaker;
 	
 	public String getFileIncludedToken(TSADto dto) throws NoSuchAlgorithmException, IllegalArgumentException, OperatorCreationException, TSPException, IOException, InvalidKeySpecException, NullPointerException, CertificateException {
 
 		String StringFromPdf = dto.getStrFromFile();
-		
+
 		//1.최초 요청으로 받은 PDF문서(Binary Strings)값의 해쉬 생성
 		String hashedStringFromPdf = Util.getHashFromString(StringFromPdf);
-		System.out.println("해쉬길이1:"+hashedStringFromPdf.length());
+		logger.debug("해쉬길이1:"+hashedStringFromPdf.length());
 		
 		//1-1.난수생성 
 		BigInteger nonce = new BigInteger(32, new Random(System.currentTimeMillis()));

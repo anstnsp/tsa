@@ -1,0 +1,76 @@
+package com.finger.tsa.tsa.service;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.Random;
+
+import org.bouncycastle.operator.OperatorCreationException;
+import org.bouncycastle.tsp.TSPException;
+import org.springframework.stereotype.Service;
+
+import com.finger.tsa.tsa.dto.TSADto;
+import com.finger.tsa.util.TSATokenMaker;
+import com.finger.tsa.util.Util;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class TSAService {
+	
+	//private final Util util;
+	//private final TSATokenMaker tsaTokenMaker;
+	
+	public String getFileIncludedToken(TSADto dto) throws NoSuchAlgorithmException, IllegalArgumentException, OperatorCreationException, TSPException, IOException, InvalidKeySpecException, NullPointerException, CertificateException {
+
+		String StringFromPdf = dto.getStrFromFile();
+		
+		//1.최초 요청으로 받은 PDF문서(Binary Strings)값의 해쉬 생성
+		String hashedStringFromPdf = Util.getHashFromString(StringFromPdf);
+		System.out.println("해쉬길이1:"+hashedStringFromPdf.length());
+		
+		//1-1.난수생성 
+		BigInteger nonce = new BigInteger(32, new Random(System.currentTimeMillis()));
+		
+		// 토큰생성기 초기화
+		TSATokenMaker tsaTokenMaker = new TSATokenMaker();
+		
+		// 인증서 설정
+		tsaTokenMaker.setCert(tsaTokenMaker.getPublicKey("C:\\Users\\anstn\\Downloads\\tsa_cert.der"));
+		tsaTokenMaker.setPrivateKey(tsaTokenMaker.getPrivateKey("C:\\Users\\anstn\\Downloads\\tsa_cert.key"));
+		
+		//2.TST(TimeStampToken)를 생성 후 토큰생성시간 리턴받음(timeGenToken)
+		String timeGenToken = tsaTokenMaker.makeTimeStampToken(hashedStringFromPdf, nonce);
+		System.out.println("토큰생성시간:"+timeGenToken);
+		
+	    byte[] buff = StringFromPdf.getBytes();  //Base64로 인코딩된 바이너리 스트링을 Base64로 디코딩 한 후 String으로 캐스팅한다. 
+	    String toStr = new String(buff);
+	    byte[] b64dec = Util.base64Dec(toStr); 
+
+		//3.최초 받은 PDF문서에 토큰 삽입. 
+		//("", 서명자로추가할이름, 지역, 원인?) 
+	    ByteArrayOutputStream baos = tsaTokenMaker.setTimeStampTokenFromBinaryString(b64dec,"서명이름", "위치", "이유");
+		byte[] bytedFile = baos.toByteArray();
+		
+		//토큰이 삽입된 pdf파일 
+		String binaryPdfFileAddedToken = new String(Util.base64Enc(bytedFile));
+		
+		
+	    //4.토큰이 삽입된 바이너리에 해쉬 생성. 
+		String hashedStringFromPdfAddedToken = Util.getHashFromString(binaryPdfFileAddedToken);
+		System.out.println("해쉬길이2:"+hashedStringFromPdfAddedToken.length());
+		//5.블록체인에 저장. (PdfHash: 원본pdf해쉬, PdfTokenHash: 토큰삽입된pdf해쉬, Tst: 타임스탬프토큰, IssuerDate: 토큰만들때 시점(yyyymmddhhmmss) , DocuSeq : 문서일련번호)
+		//TODOS.... 5 
+		
+		//6.블록체인에 저장이 됐으면 결과(토큰이삽입된pdf 문자열) 리턴.
+		return binaryPdfFileAddedToken;
+	}
+	
+
+	
+}

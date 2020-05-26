@@ -19,6 +19,34 @@
 	</properties>
 
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/net.rakugakibox.util/yaml-resource-bundle -->
+		<dependency>
+		    <groupId>net.rakugakibox.util</groupId>
+		    <artifactId>yaml-resource-bundle</artifactId>
+		    <version>1.1</version>
+		</dependency>
+			
+		<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+		<dependency>
+		    <groupId>commons-codec</groupId>
+		    <artifactId>commons-codec</artifactId>
+		    <version>1.14</version>
+		</dependency>
+
+		<!-- bouncy castle -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itextpdf</artifactId>
+			<version>5.4.2</version>
+		</dependency>
+
+		<!-- pdf  -->
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>2.0.8</version>
+		</dependency>
+	
 		<!-- fabric-sdk -->
 		<dependency>
 			<groupId>org.hyperledger.fabric</groupId>

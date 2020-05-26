@@ -1,11 +1,15 @@
 spring:
   profiles:
-    active : prod 
+    active : local 
+  messages:
+    basename: messages/exception
+    encoding: UTF-8 
+
   
 server:
   port: 4444
  
 
-logginginfo: INFO
 logging:
   config: ./src/main/resources/logback-spring.xml
+  

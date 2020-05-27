@@ -1,3 +1,7 @@
 unKnown:
   code: "-9999"
   msg: "서버오류가 발생하였습니다." 
+
+unVerified:
+  code: "-100"
+  msg: "저장되지 않은 문서입니다."
